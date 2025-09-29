@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Manager</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .card {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <nav class="mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">Finance Manager</h1>
+        <div class="space-x-4">
+            <a href="/" class="text-blue-400 hover:text-blue-300">Dashboard</a>
+            <a href="/add" class="text-blue-400 hover:text-blue-300">Add Transaction</a>
+            <a href="/transactions" class="text-blue-400 hover:text-blue-300">View All</a>
+        </div>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card p-6">
+            <h3 class="text-lg mb-2">Total Income</h3>
+            <p class="text-2xl font-bold text-green-400">₹{{ summary.income }}</p>
+        </div>
+        <div class="card p-6">
+            <h3 class="text-lg mb-2">Total Expenses</h3>
+            <p class="text-2xl font-bold text-red-400">₹{{ summary.expenses }}</p>
+        </div>
+        <div class="card p-6">
+            <h3 class="text-lg mb-2">Net Savings</h3>
+            <p class="text-2xl font-bold {% if summary.savings >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                ₹{{ summary.savings }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl mb-4">Transaction Trends</h2>
+        <div id="chart"></div>
+    </div>
+
+    <div class="card p-6">
+        <h2 class="text-xl mb-4">Recent Transactions</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left border-b border-gray-600">
+                        <th class="pb-2">Date</th>
+                        <th class="pb-2">Amount</th>
+                        <th class="pb-2">Category</th>
+                        <th class="pb-2">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in recent_transactions %}
+                    <tr class="border-b border-gray-700">
+                        <td class="py-2">{{ transaction.Date.strftime('%Y-%m-%d') }}</td>
+                        <td class="py-2 {% if transaction.Category == 'Income' %}text-green-400{% else %}text-red-400{% endif %}">
+                            ₹{{ transaction.Amount }}
+                        </td>
+                        <td class="py-2">{{ transaction.Category }}</td>
+                        <td class="py-2">{{ transaction.Description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const data = {{ plot_data | safe }};
+        const layout = {
+            paper_bgcolor: '#2d2d2d',
+            plot_bgcolor: '#2d2d2d',
+            font: {
+                color: '#e0e0e0'
+            },
+            xaxis: {
+                gridcolor: '#404040',
+                zerolinecolor: '#404040'
+            },
+            yaxis: {
+                gridcolor: '#404040',
+                zerolinecolor: '#404040'
+            },
+            margin: {
+                l: 50,
+                r: 20,
+                t: 20,
+                b: 50
+            }
+        };
+        Plotly.newPlot('chart', data, layout);
+    </script>
+</body>
+</html>

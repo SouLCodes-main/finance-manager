@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Finance Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .card {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        input {
+            background-color: #3d3d3d;
+            border: 1px solid #4d4d4d;
+            color: #e0e0e0;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <nav class="mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">Finance Manager</h1>
+        <div class="space-x-4">
+            <a href="/" class="text-blue-400 hover:text-blue-300">Dashboard</a>
+            <a href="/add" class="text-blue-400 hover:text-blue-300">Add Transaction</a>
+            <a href="/transactions" class="text-blue-400 hover:text-blue-300">View All</a>
+        </div>
+    </nav>
+
+    <div class="card p-6 mb-8">
+        <h2 class="text-xl mb-4">Filter Transactions</h2>
+        <form class="flex space-x-4 items-end">
+            <div>
+                <label for="start_date" class="block mb-1">Start Date</label>
+                <input type="date" id="start_date" name="start_date" 
+                       class="p-2 rounded">
+            </div>
+            <div>
+                <label for="end_date" class="block mb-1">End Date</label>
+                <input type="date" id="end_date" name="end_date" 
+                       class="p-2 rounded">
+            </div>
+            <button type="submit" 
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                Filter
+            </button>
+        </form>
+    </div>
+
+    <div class="card p-6">
+        <h2 class="text-xl mb-4">All Transactions</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left border-b border-gray-600">
+                        <th class="pb-2">Date</th>
+                        <th class="pb-2">Amount</th>
+                        <th class="pb-2">Category</th>
+                        <th class="pb-2">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="border-b border-gray-700">
+                        <td class="py-2">{{ transaction.Date.strftime('%Y-%m-%d') }}</td>
+                        <td class="py-2 {% if transaction.Category == 'Income' %}text-green-400{% else %}text-red-400{% endif %}">
+                            ₹{{ transaction.Amount }}
+                        </td>
+                        <td class="py-2">{{ transaction.Category }}</td>
+                        <td class="py-2">{{ transaction.Description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
